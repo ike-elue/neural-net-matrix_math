@@ -187,6 +187,14 @@ public class TimeMatrix {
         return average;
     }
     
+    public void average(TimeMatrix matrix, int timestep) {
+        for(int i = 0; i < rows; i++)
+                for(int j = 0; j < columns; j++) {
+                    this.matrix[i][j][timestep] += matrix.matrix[i][j][timestep];
+                    this.matrix[i][j][timestep] /= 2;
+                }
+    }
+    
     public double averageTime(int row) {
         double average = 0;
         

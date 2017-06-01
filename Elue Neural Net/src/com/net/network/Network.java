@@ -28,12 +28,14 @@ public class Network {
     private final List<TimeMatrix> trainingDataIn;
     private final List<TimeMatrix> trainingDataOut;
  
-    private TimeMatrix error;
+    private TimeMatrix error, trueError;
     
     private boolean initialized;
     
     private final double learningRate;
     private final int recurrentLength;
+    
+    public boolean nanFound;
     
     public Network(int activationType, double learningRate, int[] layers, int recurrentLength) {
         this.activationType = activationType;
@@ -44,6 +46,9 @@ public class Network {
         trainingDataOut = new ArrayList<>();
         initialized = false;
         layerNeurons = layers;
+        error = null;
+        trueError = null;
+        nanFound = false;
     }
     
     private void addToInput(double[] input) {
@@ -90,6 +95,7 @@ public class Network {
             determiner = update(i, everyNth);
             if(determiner.containsNAN()) {
                 System.out.println("NaN found");
+                nanFound = true;
                 break;
             }
         }
@@ -101,13 +107,18 @@ public class Network {
         for(int timestep = 0; timestep < recurrentLength; timestep++) {
             for(int j = 0; j < trainingDataIn.size(); j++) {
                 error = new TimeMatrix(trainingDataOut.get(j).sub(timestep, forward(trainingDataIn.get(j), timestep), false), true);
-                if(i % everyNth == 0 && j == trainingDataIn.size() - 1)
-                    System.out.println(i + "th iteration --> Error: " + error.absolute(timestep, false).average(timestep));
+                if(trueError == null)
+                    trueError = new TimeMatrix(error, true);
+                else
+                    trueError.average(error, timestep);
+                if(i % everyNth == 0 && j == trainingDataIn.size() - 1) 
+                    System.out.println(i + "th iteration --> Error: " + trueError.absolute(timestep, false).average(timestep));
                 error.mult(timestep, accessLayer(getFinalIndex()).getSumsPrime(timestep), true);
                 accessLayer(getFinalIndex()).setDelta(error);
                 backward(timestep);
             }
         }
+        trueError = null;
         return error;
     }
     

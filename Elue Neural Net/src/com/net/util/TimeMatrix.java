@@ -410,6 +410,10 @@ public class TimeMatrix {
         return sum * (1 - sum);
     }
     
+    public final double get(int row, int col, int timestep) {
+        return matrix[row][col][timestep];
+    }
+    
     public String getDimensions() {
         return "Rows: " + rows + "\nColumns: " + columns + "\nSequences: " + time;
     }

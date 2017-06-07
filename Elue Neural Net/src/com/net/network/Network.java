@@ -93,6 +93,8 @@ public class Network {
         TimeMatrix determiner;
         for(int i = 0; i < iterations; i++) {
             determiner = update(i, everyNth);
+            if(i != iterations - 1)
+                trueError = null;
             if(determiner.containsNAN()) {
                 System.out.println("NaN found");
                 nanFound = true;
@@ -100,7 +102,7 @@ public class Network {
             }
         }
         System.out.println("Training Network Finish.....");
-        System.out.println("\nFinal Sturcture For Neural Network " + this);
+        System.out.println("\nFinal Error: " + trueError.absolute(0, false).average(0) + "\nFinal Sturcture For Neural Network " + this);
     }
  
     private TimeMatrix update(int i, int everyNth) {
@@ -118,7 +120,6 @@ public class Network {
                 backward(timestep);
             }
         }
-        trueError = null;
         return error;
     }
     

@@ -84,9 +84,9 @@ public class Layer {
     public TimeMatrix forward(TimeMatrix input, int timestep) {
         sums.set(input.dot(timestep, weights).add(timestep, prevBias, true));
         if(activationType == Network.SIGMOID)
-            sums.hyperbolicTangent(timestep, true);
-        else if(activationType == Network.HYPERTAN)
             sums.sigmoid(timestep, true);
+        else if(activationType == Network.HYPERTAN)
+            sums.hyperbolicTangent(timestep, true);
         return sums;
     }
     

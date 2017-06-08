@@ -20,7 +20,7 @@ public class IrisReader {
     
     /**
      * 
-     * @param file sex offender list
+     * @param file iris data
      */
     public IrisReader(File file) {
         Scanner scan;
